@@ -23,9 +23,22 @@ the filled average cost, or 30 bars held; 10 bars of rest after any exit.
 
 ## Dev grade
 
-Official harness grade on the published dev window (see below for the exact
-command) — simulator estimate first, official numbers fill this in after the
-grade-local run.
+Local replay with the kit's exact market model (fee 4 bps + slippage 2 bps +
+constant-product impact, fill at the next minute's open), validated to the
+cent against official `grade-local` on the buy-and-hold baseline
+(-$31.633698). Note: `grade-local --driver process` in this VM runs Node
+only and no Docker is available, so a Python bot cannot be graded by the
+bundled CLI here; the server grades Python entries in Docker on submit.
+
+- Net PnL **+$12.34** (exact replay: +$12.341487), 1 trade, win rate 100%,
+  max drawdown 0.12%, profit factor ∞ (no losing trade), fees $0.81
+- Net PnL at 2x fees (official convention, fee doubled): **+$11.53**
+  (fee + slippage both doubled as a harsher stress test: +$11.13)
+- The one trade: buy at bar 71 open $63,457.08, sell at bar 81 open
+  $64,291.70 — the washout bounce after the day's opening plunge
+- Two executions produce byte-identical action logs (deterministic)
+- Split: first half (bars 0–719) +$12.34, second half (720–1439) $0.00
+  (no setup fired — the gate is deliberately rare)
 
 ## Ablation (dev window, same harness simulator)
 
